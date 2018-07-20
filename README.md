@@ -1,11 +1,5 @@
 # Grafana & Influxdata TICK Stack
 
-* grafana/grafana           5.1.5
-* telegraf                  1.5.3-alpine
-* influxdb                  1.5.4-alpine
-* chronograf                1.4.4-alpine
-* kapacitor                 1.4.1-alpine
-
 - [grafana/grafana](https://hub.docker.com/r/grafana/grafana/)
 - [telegraf](https://hub.docker.com/_/telegraf/)
 - [influxdb](https://hub.docker.com/_/influxdb/)
@@ -34,13 +28,13 @@ Start all the images as follows:
 
 ### Check that InfluxDB works:
 
-Run this curl command, if no errors occur InfluxDB is running:
+InfluxDB is running if the following curl command returns no errors:
 
     curl http://localhost:8086/ping
 
 #### The `InfluxDB` client
 
-Use the built-in influx cli service:
+Use the built-in InfluxDB cli service:
 
     docker-compose run influxdb-cli
     Starting influxdb ... done
