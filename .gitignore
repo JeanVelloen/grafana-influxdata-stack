@@ -1,0 +1,5 @@
+data/chronograf/*
+data/grafana/*
+data/influxdb/*
+data/kapacitor/*
+!.keep

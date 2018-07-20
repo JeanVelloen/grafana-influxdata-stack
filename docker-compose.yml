@@ -1,0 +1,83 @@
+version: "3"
+services:
+  # InfluxDB is the Time Series Database in the TICK Stack.
+  influxdb:
+    container_name: influxdb
+    image: influxdb:1.5.4-alpine
+    ports:
+      - '8083:8083'
+      - '8086:8086'
+    volumes:
+      - './data/influxdb:/var/lib/influxdb'
+    restart: always
+
+  # Data visualization & Monitoring with support for Graphite, InfluxDB, Prometheus, Elasticsearch and more.
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:5.1.5
+    ports:
+      - '3000:3000'
+    volumes:
+      - './data/grafana:/var/lib/grafana'
+    links:
+      - influxdb
+    restart: always
+
+  # Telegraf is the Agent for Collecting & Reporting Metrics & Data.
+  telegraf:
+    container_name: telegraf
+    image: telegraf:1.5.3-alpine
+    network_mode: 'host'
+    volumes:
+      - './conf/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf'
+      - '/var/run/docker.sock:/var/run/docker.sock'
+    restart: always
+
+  # Kapacitor is a Real-time Streaming Data Processing Engine.
+  kapacitor:
+    container_name: kapacitor
+    image: kapacitor:1.4.1-alpine
+    environment:
+      - KAPACITOR_INFLUXDB_0_URLS_0=http://influxdb:8086
+    ports:
+      - '9092:9092'
+    volumes:
+      - './data/kapacitor:/var/lib/kapacitor'
+    links:
+      - influxdb
+    restart: always
+
+  # Chronograf is the Complete Interface for the InfluxData Platform.
+  chronograf:
+    container_name: chronograf
+    image: chronograf:1.4.4-alpine
+    hostname: chronograf
+    ports:
+      - '8888:8888'
+    volumes:
+      - './data/chronograf:/var/lib/chronograf'
+    links:
+      - influxdb
+      - kapacitor
+    restart: always
+
+  # docker-compose run influxdb-cli
+  influxdb-cli:
+    container_name: influxdb-cli
+    image: influxdb:1.5.4-alpine
+    entrypoint:
+      - influx
+      - -host
+      - influxdb
+    links:
+      - influxdb
+
+  # docker-compose run kapacitor-cli
+  kapacitor-cli:
+    container_name: kapacitor-cli
+    image: kapacitor:1.4.1-alpine
+    entrypoint: sh
+    environment:
+      KAPACITOR_URL: http://kapacitor:9092
+    links:
+      - kapacitor
