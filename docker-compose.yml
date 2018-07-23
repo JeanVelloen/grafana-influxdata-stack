@@ -8,7 +8,7 @@ services:
       - '8083:8083'
       - '8086:8086'
     volumes:
-      - './data/influxdb:/var/lib/influxdb'
+      - ./data/influxdb:/var/lib/influxdb
     restart: always
 
   # Data visualization & Monitoring with support for Graphite, InfluxDB, Prometheus, Elasticsearch and more.
@@ -18,7 +18,7 @@ services:
     ports:
       - '3000:3000'
     volumes:
-      - './data/grafana:/var/lib/grafana'
+      - ./data/grafana:/var/lib/grafana
     links:
       - influxdb
     restart: always
@@ -29,8 +29,8 @@ services:
     image: telegraf:1.5.3-alpine
     network_mode: 'host'
     volumes:
-      - './conf/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf'
-      - '/var/run/docker.sock:/var/run/docker.sock'
+      - ./conf/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf
+      - /var/run:/var/run:ro
     restart: always
 
   # Kapacitor is a Real-time Streaming Data Processing Engine.
@@ -42,7 +42,7 @@ services:
     ports:
       - '9092:9092'
     volumes:
-      - './data/kapacitor:/var/lib/kapacitor'
+      - ./data/kapacitor:/var/lib/kapacitor
     links:
       - influxdb
     restart: always
@@ -55,7 +55,7 @@ services:
     ports:
       - '8888:8888'
     volumes:
-      - './data/chronograf:/var/lib/chronograf'
+      - ./data/chronograf:/var/lib/chronograf
     links:
       - influxdb
       - kapacitor
